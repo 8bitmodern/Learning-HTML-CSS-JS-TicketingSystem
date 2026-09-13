@@ -1,18 +1,14 @@
 {
   "name": "it-helpdesk-ticketing-system",
   "version": "1.0.0",
-  "description": "IT Helpdesk Ticketing System",
+  "description": "Basic IT Helpdesk Ticketing System using Node.js, Express, JavaScript, and JSON.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "bcrypt": "^6.0.0",
-    "express": "^5.2.1",
-    "express-session": "^1.19.0"
-  },
-  "type": "commonjs"
+    "express": "^5.1.0",
+    "express-session": "^1.18.2"
+  }
 }
