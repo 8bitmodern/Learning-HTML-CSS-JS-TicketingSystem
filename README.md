@@ -1,5 +1,3 @@
-Yep — you want it to read like a **normal README/documentation file**, not like an AI-generated numbered tutorial. Here is one continuous Markdown block you can drop directly into `README.md`:
-
 ````markdown
 # IT Helpdesk Ticketing System
 
