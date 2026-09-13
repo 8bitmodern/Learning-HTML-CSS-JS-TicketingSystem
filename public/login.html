@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Helpdesk Login</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <header>
+
+        <h1>IT Helpdesk</h1>
+
+        <nav>
+            <a href="/">Home</a>
+        </nav>
+
+    </header>
+
+    <main>
+
+        <section class="login-section">
+
+            <h2>Internal Helpdesk Login</h2>
+
+            <p>
+                Please log in to access the internal ticket portal.
+            </p>
+
+            <form id="loginForm">
+
+                <label for="username">
+                    Username
+                </label>
+
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    required
+                    autocomplete="username"
+                >
+
+                <label for="password">
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    required
+                    autocomplete="current-password"
+                >
+
+                <button type="submit">
+                    Login
+                </button>
+
+            </form>
+
+            <div id="loginMessage"></div>
+
+        </section>
+
+    </main>
+
+    <footer>
+
+        <p>
+            Internal IT Helpdesk
+        </p>
+
+    </footer>
+
+    <script src="login.js"></script>
+
+</body>
+
+</html>

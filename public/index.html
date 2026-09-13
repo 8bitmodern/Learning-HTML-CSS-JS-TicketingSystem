@@ -1,1 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Web Development Helpdesk</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>Web Development Helpdesk</h1>
+
+        <nav>
+            <a href="/">Home</a>
+            <a href="/tickets">Ticket Portal</a>
+        </nav>
+    </header>
+
+    <main>
+
+        <!-- Required H3 -->
+        <h3 style="color: #2563eb;">
+            Learning the Basics of Web Development
+        </h3>
+
+        <p>
+            HTML, CSS, and JavaScript are three of the core technologies
+            used to create websites and web applications. HTML provides
+            the structure and content of a webpage. It is used to create
+            things such as headings, paragraphs, links, forms, images,
+            and other elements that appear on a webpage.
+        </p>
+
+        <p>
+            CSS controls how the HTML page looks. It can be used to
+            change colors, fonts, spacing, layouts, borders, and many
+            other visual properties. JavaScript adds behavior and
+            interactivity to a webpage. For example, JavaScript can
+            respond to button clicks, validate forms, communicate with
+            a backend server, and update information without reloading
+            the entire page.
+        </p>
+
+        <section class="learning-box">
+
+            <h2>The Three Core Technologies</h2>
+
+            <div class="technology-grid">
+
+                <div class="technology-card">
+                    <h2>HTML</h2>
+                    <p>
+                        HTML creates the structure and content of
+                        a webpage.
+                    </p>
+                </div>
+
+                <div class="technology-card">
+                    <h2>CSS</h2>
+                    <p>
+                        CSS controls the appearance, layout, colors,
+                        and styling of the webpage.
+                    </p>
+                </div>
+
+                <div class="technology-card">
+                    <h2>JavaScript</h2>
+                    <p>
+                        JavaScript adds functionality, logic,
+                        and interactivity.
+                    </p>
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="ticket-section">
+
+            <h2>Submit a Support Ticket</h2>
+
+            <p>
+                Use the form below to submit a test support ticket.
+                The Node.js backend will save the ticket to a JSON
+                database.
+            </p>
+
+            <form id="ticketForm">
+
+                <label for="name">Name</label>
+                <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    required
+                >
+
+                <label for="email">Email</label>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    required
+                >
+
+                <label for="subject">Subject</label>
+                <input
+                    type="text"
+                    id="subject"
+                    name="subject"
+                    required
+                >
+
+                <label for="description">Description</label>
+                <textarea
+                    id="description"
+                    name="description"
+                    rows="6"
+                    required
+                ></textarea>
+
+                <button type="submit">
+                    Submit Ticket
+                </button>
+
+            </form>
+
+            <div id="message"></div>
+
+        </section>
+
+        <!-- Required second H3 -->
+        <h3 style="color: #16a34a;">
+            Conclusion: Putting the Technologies Together
+        </h3>
+
+        <p>
+            HTML, CSS, and JavaScript work together to create modern
+            websites. HTML provides the structure, CSS provides the
+            design, and JavaScript provides functionality. This project
+            also demonstrates how a frontend can communicate with a
+            backend using Node.js and Express.
+        </p>
+
+        <p>
+            The ticket form demonstrates how these technologies can be
+            combined into a small working application instead of just
+            creating a static webpage.
+        </p>
+
+    <div class="portal-link">
+    <a href="/login.html">
+        Access the Internal Ticket Portal
+    </a>
+</div>
+
+    </main>
+
+    <footer>
+        <p>
+            Web Development Learning Project
+        </p>
+    </footer>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>

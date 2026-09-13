@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Internal Ticket Portal</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <header>
+
+    <h1>Internal Ticket Portal</h1>
+
+    <nav>
+        <a href="/">Home</a>
+        <a href="/tickets">Ticket Portal</a>
+        <button id="logoutButton">
+            Logout
+        </button>
+    </nav>
+
+</header>
+
+    <main>
+
+        <h2>Submitted Support Tickets</h2>
+
+        <div id="ticketList">
+            Loading tickets...
+        </div>
+
+    </main>
+
+    <footer>
+
+        <p>
+            Internal Support Portal
+        </p>
+
+    </footer>
+
+<script>
+
+    async function loadTickets() {
+
+        const ticketList =
+            document.getElementById("ticketList");
+
+        try {
+
+            const response =
+                await fetch("/api/tickets");
+
+            if (response.status === 401 ||
+                response.redirected) {
+
+                window.location.href = "/login.html";
+
+                return;
+            }
+
+            const tickets =
+                await response.json();
+
+            if (tickets.length === 0) {
+
+                ticketList.innerHTML =
+                    "<p>No tickets have been submitted yet.</p>";
+
+                return;
+            }
+
+            ticketList.innerHTML = "";
+
+            tickets.forEach(ticket => {
+
+                const ticketCard =
+                    document.createElement("div");
+
+                ticketCard.className = "ticket-card";
+
+                ticketCard.innerHTML = `
+                    <h3>Ticket #${ticket.id}</h3>
+
+                    <p>
+                        <strong>Subject:</strong>
+                        ${ticket.subject}
+                    </p>
+
+                    <p>
+                        <strong>Name:</strong>
+                        ${ticket.name}
+                    </p>
+
+                    <p>
+                        <strong>Email:</strong>
+                        ${ticket.email}
+                    </p>
+
+                    <p>
+                        <strong>Description:</strong>
+                        ${ticket.description}
+                    </p>
+
+                    <p>
+                        <strong>Status:</strong>
+                        ${ticket.status}
+                    </p>
+
+                    <p>
+                        <strong>Created:</strong>
+                        ${ticket.created}
+                    </p>
+                `;
+
+                ticketList.appendChild(ticketCard);
+
+            });
+
+        } catch (error) {
+
+            console.error(error);
+
+            ticketList.innerHTML =
+                "<p>Unable to load tickets.</p>";
+        }
+    }
+
+
+    // Logout
+    document
+        .getElementById("logoutButton")
+        .addEventListener("click", async () => {
+
+            try {
+
+                await fetch("/api/logout", {
+                    method: "POST"
+                });
+
+                window.location.href =
+                    "/login.html";
+
+            } catch (error) {
+
+                console.error(
+                    "Logout error:",
+                    error
+                );
+            }
+
+        });
+
+
+    loadTickets();
+
+</script>
+
+</body>
+
+</html>
