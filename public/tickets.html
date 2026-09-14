@@ -122,11 +122,296 @@
                         <strong>Created:</strong>
                         ${ticket.created}
                     </p>
+
+                    <hr>
+
+                    <label>
+                        Change Status:
+                    </label>
+
+                    <select class="status-select">
+                        <option value="Open"
+                            ${ticket.status === "Open" ? "selected" : ""}>
+                            Open
+                        </option>
+
+                        <option value="In Progress"
+                            ${ticket.status === "In Progress" ? "selected" : ""}>
+                            In Progress
+                        </option>
+
+                        <option value="Closed"
+                            ${ticket.status === "Closed" ? "selected" : ""}>
+                            Closed
+                        </option>
+                    </select>
+
+                    <button
+                        class="update-status-button"
+                        data-ticket-id="${ticket.id}">
+                        Update Status
+                    </button>
+
+                    <h4>Email Customer</h4>
+
+                    <textarea
+                        class="email-message"
+                        placeholder="Write a message to the customer..."
+                        rows="6"></textarea>
+
+                    <br><br>
+
+                    <button
+                        class="send-email-button"
+                        data-ticket-id="${ticket.id}">
+                        Send Email
+                    </button>
+
+                    <br><br>
+
+                    <button
+                        class="delete-ticket-button"
+                        data-ticket-id="${ticket.id}">
+                        Delete Ticket
+                    </button>
                 `;
 
                 ticketList.appendChild(ticketCard);
 
             });
+
+
+            // ----------------------------------------
+            // Update Ticket Status
+            // ----------------------------------------
+
+            document
+                .querySelectorAll(".update-status-button")
+                .forEach(button => {
+
+                    button.addEventListener("click", async () => {
+
+                        const ticketId =
+                            button.dataset.ticketId;
+
+                        const ticketCard =
+                            button.closest(".ticket-card");
+
+                        const status =
+                            ticketCard
+                                .querySelector(".status-select")
+                                .value;
+
+                        try {
+
+                            const response =
+                                await fetch(
+                                    `/api/tickets/${ticketId}`,
+                                    {
+                                        method: "PATCH",
+
+                                        headers: {
+                                            "Content-Type":
+                                                "application/json"
+                                        },
+
+                                        body: JSON.stringify({
+                                            status: status
+                                        })
+                                    }
+                                );
+
+                            const result =
+                                await response.json();
+
+                            if (!response.ok) {
+
+                                alert(
+                                    result.error ||
+                                    "Unable to update ticket."
+                                );
+
+                                return;
+                            }
+
+                            alert(
+                                "Ticket status updated successfully."
+                            );
+
+                            loadTickets();
+
+                        } catch (error) {
+
+                            console.error(
+                                "Status update error:",
+                                error
+                            );
+
+                            alert(
+                                "Unable to update ticket."
+                            );
+                        }
+
+                    });
+
+                });
+
+
+            // ----------------------------------------
+            // Delete Ticket
+            // ----------------------------------------
+
+            document
+                .querySelectorAll(".delete-ticket-button")
+                .forEach(button => {
+
+                    button.addEventListener("click", async () => {
+
+                        const ticketId =
+                            button.dataset.ticketId;
+
+                        const confirmed =
+                            confirm(
+                                "Are you sure you want to delete this ticket?"
+                            );
+
+                        if (!confirmed) {
+
+                            return;
+                        }
+
+                        try {
+
+                            const response =
+                                await fetch(
+                                    `/api/tickets/${ticketId}`,
+                                    {
+                                        method: "DELETE"
+                                    }
+                                );
+
+                            const result =
+                                await response.json();
+
+                            if (!response.ok) {
+
+                                alert(
+                                    result.error ||
+                                    "Unable to delete ticket."
+                                );
+
+                                return;
+                            }
+
+                            alert(
+                                "Ticket deleted successfully."
+                            );
+
+                            loadTickets();
+
+                        } catch (error) {
+
+                            console.error(
+                                "Delete error:",
+                                error
+                            );
+
+                            alert(
+                                "Unable to delete ticket."
+                            );
+                        }
+
+                    });
+
+                });
+
+
+            // ----------------------------------------
+            // Send Email
+            // ----------------------------------------
+
+            document
+                .querySelectorAll(".send-email-button")
+                .forEach(button => {
+
+                    button.addEventListener("click", async () => {
+
+                        const ticketId =
+                            button.dataset.ticketId;
+
+                        const ticketCard =
+                            button.closest(".ticket-card");
+
+                        const message =
+                            ticketCard
+                                .querySelector(".email-message")
+                                .value
+                                .trim();
+
+                        if (!message) {
+
+                            alert(
+                                "Please enter a message."
+                            );
+
+                            return;
+                        }
+
+                        try {
+
+                            const response =
+                                await fetch(
+                                    `/api/tickets/${ticketId}/email`,
+                                    {
+                                        method: "POST",
+
+                                        headers: {
+                                            "Content-Type":
+                                                "application/json"
+                                        },
+
+                                        body: JSON.stringify({
+                                            message: message
+                                        })
+                                    }
+                                );
+
+                            const result =
+                                await response.json();
+
+                            if (!response.ok) {
+
+                                alert(
+                                    result.error ||
+                                    "Unable to send email."
+                                );
+
+                                return;
+                            }
+
+                            alert(
+                                "Email sent successfully."
+                            );
+
+                            ticketCard
+                                .querySelector(".email-message")
+                                .value = "";
+
+                        } catch (error) {
+
+                            console.error(
+                                "Email error:",
+                                error
+                            );
+
+                            alert(
+                                "Unable to send email."
+                            );
+                        }
+
+                    });
+
+                });
 
         } catch (error) {
 
@@ -138,7 +423,10 @@
     }
 
 
+    // ----------------------------------------
     // Logout
+    // ----------------------------------------
+
     document
         .getElementById("logoutButton")
         .addEventListener("click", async () => {
@@ -163,6 +451,7 @@
         });
 
 
+    // Load tickets when page opens
     loadTickets();
 
 </script>
