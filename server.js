@@ -1,8 +1,10 @@
+require("dotenv").config();
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
 const bcrypt = require("bcrypt");
 const session = require("express-session");
+const nodemailer = require("nodemailer");
 
 const app = express();
 const PORT = 3000;
@@ -10,6 +12,13 @@ const PORT = 3000;
 // Database files
 const ticketsFile = path.join(__dirname, "tickets.json");
 const usersFile = path.join(__dirname, "users.json");
+const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_APP_PASSWORD
+    }
+});
 
 // --------------------------------------------------
 // Middleware
@@ -197,6 +206,180 @@ app.get(
 
             res.status(500).json({
                 error: "Unable to read tickets."
+            });
+        }
+    }
+);
+
+app.post(
+    "/api/tickets/:id/email",
+    requireAuthentication,
+    async (req, res) => {
+
+        const { message } = req.body;
+
+        if (!message || typeof message !== "string") {
+
+            return res.status(400).json({
+                error: "Email message is required."
+            });
+        }
+
+        try {
+
+            const tickets =
+                JSON.parse(
+                    fs.readFileSync(ticketsFile, "utf8")
+                );
+
+            const ticket =
+                tickets.find(
+                    ticket =>
+                        ticket.id === Number(req.params.id)
+                );
+
+            if (!ticket) {
+
+                return res.status(404).json({
+                    error: "Ticket not found."
+                });
+            }
+
+            await transporter.sendMail({
+
+                from: process.env.GMAIL_USER,
+
+                to: ticket.email,
+
+                subject: `Re: ${ticket.subject}`,
+
+                text: message
+            });
+
+            res.json({
+                message: "Email sent successfully."
+            });
+
+        } catch (error) {
+
+            console.error(
+                "Email error:",
+                error
+            );
+
+            res.status(500).json({
+                error: "Unable to send email."
+            });
+        }
+    }
+);
+
+// --------------------------------------------------
+// Update Ticket Status
+// --------------------------------------------------
+
+app.patch(
+    "/api/tickets/:id",
+    requireAuthentication,
+    (req, res) => {
+
+        const { status } = req.body;
+        const allowedStatuses = [
+            "Open",
+            "In Progress",
+            "Closed"
+        ];
+
+        if (!allowedStatuses.includes(status)) {
+            return res.status(400).json({
+                error: "Invalid ticket status."
+            });
+        }
+
+        try {
+
+            const tickets = JSON.parse(
+                fs.readFileSync(ticketsFile, "utf8")
+            );
+
+            const ticket = tickets.find(
+                ticket => ticket.id === Number(req.params.id)
+            );
+
+            if (!ticket) {
+                return res.status(404).json({
+                    error: "Ticket not found."
+                });
+            }
+
+            ticket.status = status;
+
+            fs.writeFileSync(
+                ticketsFile,
+                JSON.stringify(tickets, null, 2)
+            );
+
+            res.json({
+                message: "Ticket status updated.",
+                ticket: ticket
+            });
+
+        } catch (error) {
+
+            console.error("Ticket update error:", error);
+
+            res.status(500).json({
+                error: "Unable to update ticket."
+            });
+        }
+    }
+);
+// --------------------------------------------------
+// Delete Ticket
+// --------------------------------------------------
+
+app.delete(
+    "/api/tickets/:id",
+    requireAuthentication,
+    (req, res) => {
+
+        try {
+
+            const tickets = JSON.parse(
+                fs.readFileSync(ticketsFile, "utf8")
+            );
+
+            const ticketId = Number(req.params.id);
+
+            const ticketExists = tickets.some(
+                ticket => ticket.id === ticketId
+            );
+
+            if (!ticketExists) {
+                return res.status(404).json({
+                    error: "Ticket not found."
+                });
+            }
+
+            const updatedTickets = tickets.filter(
+                ticket => ticket.id !== ticketId
+            );
+
+            fs.writeFileSync(
+                ticketsFile,
+                JSON.stringify(updatedTickets, null, 2)
+            );
+
+            res.json({
+                message: "Ticket deleted successfully."
+            });
+
+        } catch (error) {
+
+            console.error("Ticket deletion error:", error);
+
+            res.status(500).json({
+                error: "Unable to delete ticket."
             });
         }
     }
